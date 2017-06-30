@@ -1,3 +1,111 @@
+
+
+```
+wget http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.5.3-beta/zookeeper-3.5.3-beta.tar.gz
+
+
+scp -r ./zookeeper-3.5.3-beta.tar.gz root@slave1:/home/wecash/dev/
+scp -r ./zookeeper-3.5.3-beta.tar.gz root@slave2:/home/wecash/dev/
+scp -r ./zookeeper-3.5.3-beta.tar.gz root@slave3:/home/wecash/dev/
+
+
+tar -xvf zookeeper-3.5.3-beta.tar.gz 
+
+
+```
+
+```
+
+[root@master conf]# cat zoo.cfg 
+# The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial 
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between 
+# sending a request and getting an acknowledgement
+syncLimit=5
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just 
+# example sakes.
+dataDir=/tmp/zookeeper
+# the port at which the clients will connect
+clientPort=2181
+# the maximum number of client connections.
+# increase this if you need to handle more clients
+#maxClientCnxns=60
+#
+# Be sure to read the maintenance section of the 
+# administrator guide before turning on autopurge.
+#
+# http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+#
+# The number of snapshots to retain in dataDir
+#autopurge.snapRetainCount=3
+# Purge task interval in hours
+# Set to "0" to disable auto purge feature
+#autopurge.purgeInterval=1
+server.n=ip:2888:3888
+[root@master conf]# 
+
+```
+
+一旦运行配置文件会出现下面的情况
+```
+
+[root@master conf]# vim zoo.cfg
+
+initLimit=10
+syncLimit=5
+clientPort=2181
+tickTime=2000
+dataDir=/tmp/zookeeper
+dynamicConfigFile=/home/wecash/dev/zookeeper/conf/zoo.cfg.dynamic.100000000
+~         
+
+[root@master conf]# vim zoo.cfg.dynamic.100000000 
+
+server.1=192.168.6.8:2888:3888:participant
+server.2=192.168.6.9:2888:3888:participant
+server.3=192.168.6.10:2888:3888:participant
+server.4=192.168.6.11:2888:3888:participant
+
+```
+
+一致 有leader 数据树
+存储在内存中的 也是一种数据库？
+
+客户端连接
+
+```
+[root@master bin]# ./zkCli.sh -server slave1:2181
+
+```
+
+写的时候要通知所有节点
+
+读的时候会非常快。
+
+
+应用场景：
+
+> 配置一致
+
+HA 高可用
+持久化节点，临时的节点 主被切换
+
+pub/sub 发布订阅
+
+naming service
+
+load banlance
+
+分布式锁
+
+
+---
+
+
 ```$xslt
 [root@master bin]# ./zkCli.sh -server slave1:2181
 Connecting to slave1:2181
