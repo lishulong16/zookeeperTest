@@ -1,5 +1,10 @@
+### zookeeper
 
+```$xslt
+cap 被证明
+```
 
+> 分佈式系統CAP理論:consistency availability partition tolerance
 ```
 wget http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.5.3-beta/zookeeper-3.5.3-beta.tar.gz
 
